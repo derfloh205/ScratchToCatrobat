@@ -163,7 +163,7 @@ class TestRawProjectInit(unittest.TestCase):
 
     def test_can_create_from_raw_content(self):
         for project_name in self.TEST_PROJECTS:
-            project_data_path = os.path.join(common_testing.get_test_project_path(project_name), scratch._PROJECT_FILE_NAME)
+            project_data_path = os.path.join(common_testing.get_test_project_path(project_name), scratch._PROJECT_FILE_NAME).replace('\\', '/')
             assert scratch.RawProject.from_project_code_content(common.content_of(project_data_path))
 
     def test_can_create_from_project_directory(self):

@@ -47,7 +47,7 @@ def _checked_batik_jar_path():
 #     if _BATIK_ENVIRONMENT_HOME not in os.environ:
 #         raise EnvironmentError("Environment variable '{}' must be set to batik library location.".format(_BATIK_ENVIRONMENT_HOME))
     batik_home_dir = helpers.config.get("PATHS", "batik_home")
-    batik_jar_path = os.path.join(batik_home_dir, _BATIK_CLI_JAR)
+    batik_jar_path = os.path.join(batik_home_dir, _BATIK_CLI_JAR).replace('\\', '/')
     if not os.path.exists(batik_jar_path):
         raise EnvironmentError("Batik jar '{}' must be existing in {}.".format(batik_jar_path, os.path.dirname(batik_jar_path)))
     _batik_jar_path = batik_jar_path

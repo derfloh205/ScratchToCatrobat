@@ -292,7 +292,7 @@ class WebApiTest(common_testing.BaseTestCase):
         with common.TemporaryDirectory(remove_on_exit=True) as temp_dir:
             for _project_url, project_id in common_testing.TEST_PROJECT_URL_TO_ID_MAP.iteritems():
                 scratchwebapi.download_project_code(project_id, temp_dir)
-                project_file_path = os.path.join(temp_dir, scratch._PROJECT_FILE_NAME)
+                project_file_path = os.path.join(temp_dir, scratch._PROJECT_FILE_NAME).replace('\\', '/')
                 with open(project_file_path, 'r') as project_code_file:
                     project_code_content = project_code_file.read()
                     raw_project = scratch.RawProject.from_project_code_content(project_code_content)

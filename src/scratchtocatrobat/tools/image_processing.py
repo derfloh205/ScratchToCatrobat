@@ -70,16 +70,16 @@ def create_font(font_name, size, is_bold=False, is_italic=False):
     assert isinstance(is_bold, bool)
     assert isinstance(is_italic, bool)
 
-    font_base_path = os.path.join(common.get_project_base_path(), 'resources', 'fonts')
+    font_base_path = os.path.join(common.get_project_base_path(), 'resources', 'fonts').replace('\\', '/')
     fonts = _supported_fonts_path_mapping[font_name]
     if is_bold and is_italic:
-        font_path = os.path.join(font_base_path, fonts['bold-italic'])
+        font_path = os.path.join(font_base_path, fonts['bold-italic']).replace('\\', '/')
     elif is_bold:
-        font_path = os.path.join(font_base_path, fonts['bold'])
+        font_path = os.path.join(font_base_path, fonts['bold']).replace('\\', '/')
     elif is_italic:
-        font_path = os.path.join(font_base_path, fonts['italic'])
+        font_path = os.path.join(font_base_path, fonts['italic']).replace('\\', '/')
     else:
-        font_path = os.path.join(font_base_path, fonts['regular'])
+        font_path = os.path.join(font_base_path, fonts['regular']).replace('\\', '/')
     assert os.path.isfile(font_path)
 
     font = Font.createFont(Font.TRUETYPE_FONT, File(font_path))

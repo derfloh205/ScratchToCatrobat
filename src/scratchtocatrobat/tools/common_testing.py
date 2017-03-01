@@ -64,15 +64,15 @@ _log = common.log
 
 
 def get_test_resources_path(*path_parts):
-    return os.path.join(common.get_project_base_path(), "test", "res", *path_parts)
+    return os.path.join(common.get_project_base_path(), "test", "res", *path_parts).replace('\\', '/')
 
 
 def get_test_project_path(*path_parts):
-    return os.path.join(get_test_resources_path(), "scratch", *path_parts)
+    return os.path.join(get_test_resources_path(), "scratch", *path_parts).replace('\\', '/')
 
 
 def get_test_project_packed_file(scratch_file):
-    return os.path.join(get_test_resources_path(), "scratch_packed", scratch_file)
+    return os.path.join(get_test_resources_path(), "scratch_packed", scratch_file).replace('\\', '/')
 
 
 class BaseTestCase(unittest.TestCase):
@@ -82,7 +82,7 @@ class BaseTestCase(unittest.TestCase):
         self.temp_dir = tempfile.mkdtemp(prefix="stc_")
         class_name, testcase_name = self.id().split(".")[-2:]
         assert class_name is not None and testcase_name is not None
-        self.__testresult_base_path = os.path.join(common.get_project_base_path(), "testresult", class_name, testcase_name)
+        self.__testresult_base_path = os.path.join(common.get_project_base_path(), "testresult", class_name, testcase_name).replace('\\', '/')
         if os.path.exists(self.__testresult_base_path):
             shutil.rmtree(self.__testresult_base_path)
         self.__testresult_folder_subdir = None
@@ -95,7 +95,7 @@ class BaseTestCase(unittest.TestCase):
     def _testresult_folder_path(self):
         folder_path = self.__testresult_base_path
         if self.__testresult_folder_subdir is not None:
-            folder_path = os.path.join(folder_path, self.__testresult_folder_subdir)
+            folder_path = os.path.join(folder_path, self.__testresult_folder_subdir).replace('\\', '/')
         common.makedirs(folder_path)
         return folder_path
 
@@ -108,7 +108,7 @@ class BaseTestCase(unittest.TestCase):
     @classmethod
     def get_test_resources_paths(cls, *args):
         target_resource_path = get_test_resources_path(*args)
-        return [_ for _ in glob.glob(os.path.join(target_resource_path, "*"))]
+        return [_ for _ in glob.glob(os.path.join(target_resource_path, "*").replace('\\', '/'))]
 
 
 class ProjectTestCase(BaseTestCase):
@@ -146,7 +146,7 @@ class ProjectTestCase(BaseTestCase):
                         self.fail("Expection '{}' with url '{}'".format(sys.exc_info()[0], xml_node.text))
 
     def assertValidCatrobatProgramStructure(self, project_path, project_name):
-        project_xml_path = os.path.join(project_path, catrobat.PROGRAM_SOURCE_FILE_NAME)
+        project_xml_path = os.path.join(project_path, catrobat.PROGRAM_SOURCE_FILE_NAME).replace('\\', '/')
         with open(project_xml_path) as fp:
             assert fp.readline() == self._storagehandler.XML_HEADER
 
@@ -163,12 +163,12 @@ class ProjectTestCase(BaseTestCase):
         # TODO: refactor duplication
         sounds_dir = converter.ConvertedProject._sounds_dir_of_project(project_path)
         for node in root.findall('.//sound/fileName'):
-            sound_path = os.path.join(sounds_dir, node.text)
+            sound_path = os.path.join(sounds_dir, node.text).replace('\\', '/')
             assert os.path.exists(sound_path)
 
         images_dir = converter.ConvertedProject._images_dir_of_project(project_path)
         for node in root.findall('.//look/fileName'):
-            image_path = os.path.join(images_dir, node.text)
+            image_path = os.path.join(images_dir, node.text).replace('\\', '/')
             assert os.path.exists(image_path), "Missing: {}, available files: {}".format(repr(image_path), os.listdir(os.path.dirname(image_path)))
 
     def assertValidCatrobatProgramPackageAndUnpackIf(self, zip_path, project_name, unused_scratch_resources=None):

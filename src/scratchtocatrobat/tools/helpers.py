@@ -35,12 +35,12 @@ from functools import wraps
 # IMMUTABLE PATHS
 ################################################################################
 HELPER_PATH = os.path.realpath(os.path.dirname(__file__))
-APP_PATH = os.path.join(HELPER_PATH, "..", "..", "..")
-SRC_PATH = os.path.join(APP_PATH, "src")
-LIB_PATH = os.path.join(APP_PATH, "lib")
+APP_PATH = os.path.join(HELPER_PATH, "..", "..", "..").replace('\\', '/')
+SRC_PATH = os.path.join(APP_PATH, "src").replace('\\', '/')
+LIB_PATH = os.path.join(APP_PATH, "lib").replace('\\', '/')
 CFG_DEFAULT_FILE_NAME = "default.ini"
 CFG_CUSTOM_ENV_FILE_NAME = "environment.ini"
-CFG_PATH = os.path.join(APP_PATH, "config")
+CFG_PATH = os.path.join(APP_PATH, "config").replace('\\', '/')
 
 
 ################################################################################
@@ -146,7 +146,7 @@ def tag_name_of_used_catroid_hierarchy():
     return config.get("CATROID", "tag_name_of_used_hierarchy")
 
 def latest_catroid_repository_release_data():
-    cached_file_path = os.path.join(config.get("PATHS", "tmp"), "cache_catroid_latest_release.dat")
+    cached_file_path = os.path.join(config.get("PATHS", "tmp"), "cache_catroid_latest_release.dat").replace('\\', '/')
     url = config.get("CATROID", "repository_api_show_tags_url")
     try:
         # check if cached file exists
@@ -214,8 +214,8 @@ def print_info_or_version_screen(show_version_only, catrobat_language_version):
 
 def _setup_configuration():
     make_dir_if_not_exists(CFG_PATH)
-    config_default_file_path = os.path.join(CFG_PATH, CFG_DEFAULT_FILE_NAME)
-    config_custom_env_file_path = os.path.join(CFG_PATH, CFG_CUSTOM_ENV_FILE_NAME)
+    config_default_file_path = os.path.join(CFG_PATH, CFG_DEFAULT_FILE_NAME).replace('\\', '/')
+    config_custom_env_file_path = os.path.join(CFG_PATH, CFG_CUSTOM_ENV_FILE_NAME).replace('\\', '/')
 
     if not os.path.exists(config_default_file_path):
         error("No such file '%s' exists." % CFG_DEFAULT_FILE_NAME)
@@ -245,16 +245,16 @@ def _setup_configuration():
     return config
 
 def inject_git_commmit_hook():
-    git_dir = os.path.join(APP_PATH, ".git")
+    git_dir = os.path.join(APP_PATH, ".git").replace('\\', '/')
     if not os.path.isdir(git_dir): # abort, this seems to be no valid git repository...
         return
 
-    hook_dir_path = os.path.join(git_dir, "hooks")
+    hook_dir_path = os.path.join(git_dir, "hooks").replace('\\', '/')
     make_dir_if_not_exists(hook_dir_path)
-    hook_path = os.path.join(hook_dir_path, "pre-commit")
+    hook_path = os.path.join(hook_dir_path, "pre-commit").replace('\\', '/')
 
-    config_default_file_path = os.path.normpath(os.path.join(CFG_PATH, CFG_DEFAULT_FILE_NAME))
-    config_custom_env_file_path = os.path.normpath(os.path.join(CFG_PATH, CFG_CUSTOM_ENV_FILE_NAME))
+    config_default_file_path = os.path.normpath(os.path.join(CFG_PATH, CFG_DEFAULT_FILE_NAME).replace('\\', '/'))
+    config_custom_env_file_path = os.path.normpath(os.path.join(CFG_PATH, CFG_CUSTOM_ENV_FILE_NAME).replace('\\', '/'))
 
     def formatted_shell_script_code(content):
         lines = content.split('\n')

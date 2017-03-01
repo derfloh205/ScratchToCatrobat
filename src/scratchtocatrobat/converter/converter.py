@@ -316,6 +316,7 @@ class _ScratchToCatrobat(object):
         "sceneName": catformula.Sensors.OBJECT_BACKGROUND_NAME,
         "backgroundIndex": catformula.Sensors.OBJECT_BACKGROUND_NUMBER,
         "costumeIndex": catformula.Sensors.OBJECT_LOOK_NUMBER,
+        "testBlock": None,
 
         # WORKAROUND: using ROUND for Catrobat float => Scratch int
         "soundLevel": lambda *_args: catrobat.formula_element_for(catformula.Functions.ROUND,
@@ -514,11 +515,11 @@ def _get_or_create_shared_global_answer_variable(project, data_container, script
 
 # TODO: refactor _key_* functions to be used just once
 def _key_image_path_for(key):
-    key_images_path = os.path.join(common.get_project_base_path(), 'resources', 'images', 'keys')
+    key_images_path = os.path.join(common.get_project_base_path(), 'resources', 'images', 'keys').replace('\\', '/')
     for key_filename in os.listdir(key_images_path):
         basename, _ = os.path.splitext(key_filename)
         if basename.lower().endswith("_".join(key.split())):
-            return os.path.join(key_images_path, key_filename)
+            return os.path.join(key_images_path, key_filename).replace('\\', '/')
     assert False, "Key '%s' not found in %s" % (key, os.listdir(key_images_path))
 
 
@@ -1011,14 +1012,14 @@ class ConvertedProject(object):
 
     @staticmethod
     def _converted_output_path(output_dir, project_name):
-        return os.path.join(output_dir, catrobat.encoded_project_name(project_name) + catrobat.PACKAGED_PROGRAM_FILE_EXTENSION)
+        return os.path.join(output_dir, catrobat.encoded_project_name(project_name) + catrobat.PACKAGED_PROGRAM_FILE_EXTENSION).replace('\\', '/')
 
     def save_as_catrobat_package_to(self, output_dir, archive_name=None, progress_bar=None, context=None):
 
         def iter_dir(path):
             for root, _, files in os.walk(path):
                 for file_ in files:
-                    yield os.path.join(root, file_)
+                    yield os.path.join(root, file_).replace('\\', '/')
         log.info("convert Scratch project to '%s'", output_dir)
 
         with common.TemporaryDirectory() as catrobat_program_dir:
@@ -1027,8 +1028,8 @@ class ConvertedProject(object):
             archive_name = self.name if archive_name is None else archive_name
             catrobat_zip_file_path = self._converted_output_path(output_dir, archive_name)
             log.info("  save packaged Scratch project to '%s'", catrobat_zip_file_path)
-            if os.path.exists(catrobat_zip_file_path):
-                os.remove(catrobat_zip_file_path)
+            #if os.path.exists(catrobat_zip_file_path):
+                #os.remove(catrobat_zip_file_path)
             with zipfile.ZipFile(catrobat_zip_file_path, 'w') as zip_fp:
                 for file_path in iter_dir(unicode(catrobat_program_dir)):
                     assert isinstance(file_path, unicode)
@@ -1039,11 +1040,11 @@ class ConvertedProject(object):
 
     @staticmethod
     def _images_dir_of_project(temp_dir):
-        return os.path.join(temp_dir, CATROBAT_DEFAULT_SCENE_NAME, "images")
+        return os.path.join(temp_dir, CATROBAT_DEFAULT_SCENE_NAME, "images").replace('\\', '/')
 
     @staticmethod
     def _sounds_dir_of_project(temp_dir):
-        return os.path.join(temp_dir, CATROBAT_DEFAULT_SCENE_NAME, "sounds")
+        return os.path.join(temp_dir, CATROBAT_DEFAULT_SCENE_NAME, "sounds").replace('\\', '/')
 
     def save_as_catrobat_directory_structure_to(self, temp_path, progress_bar=None, context=None):
         def create_directory_structure():
@@ -1055,7 +1056,7 @@ class ConvertedProject(object):
 
             for _ in (temp_path, sounds_path, images_path):
                 # TODO: into common module
-                open(os.path.join(_, catrobat.ANDROID_IGNORE_MEDIA_MARKER_FILE_NAME), 'a').close()
+                open(os.path.join(_, catrobat.ANDROID_IGNORE_MEDIA_MARKER_FILE_NAME).replace('\\', '/'), 'a').close()
             return sounds_path, images_path
 
         def program_source_for(catrobat_program):
@@ -1066,20 +1067,20 @@ class ConvertedProject(object):
 
         def write_program_source(catrobat_program, context):
             program_source = program_source_for(catrobat_program)
-            with open(os.path.join(temp_path, catrobat.PROGRAM_SOURCE_FILE_NAME), "wb") as fp:
+            with open(os.path.join(temp_path, catrobat.PROGRAM_SOURCE_FILE_NAME).replace('\\', '/'), "wb") as fp:
                 fp.write(program_source.encode("utf8"))
 
             # copying key images needed for keyPressed substitution
             for listened_key in self.scratch_project.listened_keys:
                 key_image_path = _key_image_path_for(listened_key)
-                shutil.copyfile(key_image_path, os.path.join(images_path, _key_filename_for(listened_key)))
+                shutil.copyfile(key_image_path, os.path.join(images_path, _key_filename_for(listened_key)).replace('\\', '/'))
 
         def download_automatic_screenshot_if_available(output_dir, scratch_project):
             if scratch_project.automatic_screenshot_image_url is None:
                 return
 
             _AUTOMATIC_SCREENSHOT_FILE_NAME = helpers.catrobat_info("automatic_screenshot_file_name")
-            download_file_path = os.path.join(output_dir, _AUTOMATIC_SCREENSHOT_FILE_NAME)
+            download_file_path = os.path.join(output_dir, _AUTOMATIC_SCREENSHOT_FILE_NAME).replace('\\', '/')
             common.download_file(scratch_project.automatic_screenshot_image_url, download_file_path)
 
         # TODO: rename/rearrange abstracting methods
@@ -1094,7 +1095,7 @@ class ConvertedProject(object):
         log.info("  Saving project XML file")
         write_program_source(self.catrobat_program, context)
         log.info("  Downloading and adding automatic screenshot")
-        download_automatic_screenshot_if_available(os.path.join(temp_path, CATROBAT_DEFAULT_SCENE_NAME), self.scratch_project)
+        download_automatic_screenshot_if_available(os.path.join(temp_path, CATROBAT_DEFAULT_SCENE_NAME).replace('\\', '/'), self.scratch_project)
         if progress_bar != None:
             progress_bar.update(ProgressType.SAVE_XML, progress_bar.saving_xml_progress_weight)
 
@@ -1161,7 +1162,6 @@ class _BlocksConversionTraverser(scratch.AbstractBlocksTraverser):
         self.arguments = self._pop_stack(arguments_start_index)
 
         new_stack_values = self._converted_script_element()
-
         del self._stack[-1]
         if not isinstance(new_stack_values, list):
             new_stack_values = [new_stack_values]
@@ -1193,7 +1193,6 @@ class _BlocksConversionTraverser(scratch.AbstractBlocksTraverser):
         if isinstance(self.script_element, scratch.Block):
             log.debug("    block to convert: %s, arguments: %s",
                       block_name, catrobat.simple_name_for(self.arguments))
-
             unmapped_block_arguments = filter(lambda arg: isinstance(arg, UnmappedBlock), self.arguments)
             unsupported_blocks = map(lambda unmapped_block: unmapped_block.to_placeholder_brick(self.block_name)[0], unmapped_block_arguments)
             self.arguments = map(lambda arg: catrobat.create_formula_element_with_value(0) if isinstance(arg, UnmappedBlock) else arg, self.arguments)
@@ -1281,6 +1280,22 @@ class _BlocksConversionTraverser(scratch.AbstractBlocksTraverser):
         return converted_element
 
     # formula element blocks (compute, operator, ...)
+    @_register_handler(_block_name_to_handler_map, "testBlock")
+    def _convert_test_block(self):
+        print "Arguments:"
+        assert self.arguments[0] == "loudness"
+        left_formula = catformula.FormulaElement(catElementType.SENSOR, None, None)
+        right_formula = catformula.FormulaElement(catElementType.NUMBER, None, None)
+        left_formula.value = str(catformula.Sensors.LOUDNESS)
+        right_formula.value = str(self.arguments[1]) # here : 4
+        formula = catformula.Formula(self._converted_helper_brick_or_formula_element([left_formula, right_formula], ">"))
+
+        if_then_brick = catbricks.IfThenLogicBeginBrick(formula)
+        say_bubble_brick = self.arguments[2]
+        if_then_end_brick = catbricks.IfThenLogicEndBrick(if_then_brick)
+
+        return [if_then_brick,say_bubble_brick,if_then_end_brick]
+
     @_register_handler(_block_name_to_handler_map, "()")
     def _convert_bracket_block(self):
         # NOTE: this operator is only used internally and not part of Scratch

@@ -96,7 +96,7 @@ def download_project_code(project_id, target_dir):
     from scratchtocatrobat.tools import common
     from scratchtocatrobat.scratch import scratch
     project_code_url = helpers.config.get("SCRATCH_API", "project_url_template").format(project_id)
-    project_file_path = os.path.join(target_dir, scratch._PROJECT_FILE_NAME)
+    project_file_path = os.path.join(target_dir, scratch._PROJECT_FILE_NAME).replace('\\', '/')
     try:
         common.download_file(project_code_url, project_file_path)
     except common.ScratchtobatHTTP404Error as _:
@@ -129,7 +129,7 @@ def download_project(project_url, target_dir, progress_bar=None):
             target_dir = self._kwargs["target_dir"]
             md5_file_name = self._kwargs["md5_file_name"]
             progress_bar = self._kwargs["progress_bar"]
-            resource_file_path = os.path.join(target_dir, md5_file_name)
+            resource_file_path = os.path.join(target_dir, md5_file_name).replace('\\', '/')
             try:
                 common.download_file(resource_url, resource_file_path)
             except (SocketTimeoutException, SocketException, UnknownHostException, IOException) as e:

@@ -344,7 +344,7 @@ class RawProject(Object):
 
     @staticmethod
     def raw_project_code_from_project_folder_path(project_folder_path):
-        json_file_path = os.path.join(project_folder_path, _PROJECT_FILE_NAME)
+        json_file_path = os.path.join(project_folder_path, _PROJECT_FILE_NAME).replace('\\', '/')
         if not os.path.exists(json_file_path):
             raise EnvironmentError("Project file not found: {!r}. Please create.".format(json_file_path))
         with open(json_file_path) as fp:
@@ -387,7 +387,7 @@ class Project(RawProject):
         def read_md5_to_resource_path_mapping():
             md5_to_resource_path_map = {}
             # TODO: clarify that only files with extension are covered
-            for res_file_path in glob.glob(os.path.join(project_base_path, "*.*")):
+            for res_file_path in glob.glob(os.path.join(project_base_path, "*.*").replace('\\', '/')):
                 resource_name = common.md5_hash(res_file_path) + os.path.splitext(res_file_path)[1]
                 md5_to_resource_path_map[resource_name] = res_file_path
             try:
@@ -450,7 +450,7 @@ class Project(RawProject):
     def find_unused_resources_name_and_filepath(self):
         # TODO: remove duplication with __init__
         result = []
-        for file_path in glob.glob(os.path.join(self.project_base_path, "*.*")):
+        for file_path in glob.glob(os.path.join(self.project_base_path, "*.*").replace('\\', '/')):
             md5_resource_filename = common.md5_hash(file_path) + os.path.splitext(file_path)[1]
             if md5_resource_filename not in self.resource_names:
                 if os.path.basename(file_path) != _PROJECT_FILE_NAME:

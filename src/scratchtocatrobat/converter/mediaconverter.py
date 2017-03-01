@@ -116,7 +116,7 @@ class MediaConverter(object):
 
             for costume_info in scratch_object.get_costumes():
                 costume_file_name = costume_info[JsonKeys.COSTUME_MD5]
-                costume_src_path = os.path.join(project_base_path, costume_file_name)
+                costume_src_path = os.path.join(project_base_path, costume_file_name).replace('\\', '/')
                 file_ext = os.path.splitext(costume_file_name)[1].lower()
 
                 if not os.path.exists(costume_src_path):
@@ -147,7 +147,7 @@ class MediaConverter(object):
 
             for sound_info in scratch_object.get_sounds():
                 sound_file_name = sound_info[JsonKeys.SOUND_MD5]
-                sound_src_path = os.path.join(project_base_path, sound_file_name)
+                sound_src_path = os.path.join(project_base_path, sound_file_name).replace('\\', '/')
                 file_ext = os.path.splitext(sound_file_name)[1].lower()
 
                 if not os.path.exists(sound_src_path):
@@ -242,8 +242,8 @@ class MediaConverter(object):
 
         self._update_file_names_of_converted_media_files()
 
-        for media_file_to_be_removed in converted_media_files_to_be_removed:
-            os.remove(media_file_to_be_removed)
+        #for media_file_to_be_removed in converted_media_files_to_be_removed:
+            #os.remove(media_file_to_be_removed)
 
 
     def _update_file_names_of_converted_media_files(self):
@@ -268,5 +268,5 @@ class MediaConverter(object):
                 assert new_file_name != old_file_name # check if renamed!
                 self.renamed_files_map[old_file_name] = new_file_name
 
-            shutil.copyfile(src_path, os.path.join(dest_path, new_file_name))
+            shutil.copyfile(src_path, os.path.join(dest_path, new_file_name).replace('\\', '/'))
 

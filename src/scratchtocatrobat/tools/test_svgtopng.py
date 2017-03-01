@@ -41,9 +41,9 @@ class SvgToPngTest(common_testing.BaseTestCase):
     #        assert imghdr.what(output_png_path) == "png"
                 
     def test_parse_svgfile_and_convert_to_png_cape(self):
-        img_proc_dir = os.path.join(helpers.APP_PATH, "test", "res", "img_proc_png")
-        input_svg_path = os.path.join(img_proc_dir, "input_cape.svg")
-        expected_image_path = os.path.join(img_proc_dir, "expected_cape.png")
+        img_proc_dir = os.path.join(helpers.APP_PATH, "test", "res", "img_proc_png").replace('\\', '/')
+        input_svg_path = os.path.join(img_proc_dir, "input_cape.svg").replace('\\', '/')
+        expected_image_path = os.path.join(img_proc_dir, "expected_cape.png").replace('\\', '/')
         
         assert os.path.exists(input_svg_path)
         
@@ -68,9 +68,9 @@ class SvgToPngTest(common_testing.BaseTestCase):
                 assert exp_rgb_val == result_rgb_val
                 
     def test_parse_svgfile_and_convert_to_png_background(self):
-        img_proc_dir = os.path.join(helpers.APP_PATH, "test", "res", "img_proc_png")
-        input_svg_path = os.path.join(img_proc_dir, "input_background.svg")
-        expected_image_path = os.path.join(img_proc_dir, "expected_background.png")
+        img_proc_dir = os.path.join(helpers.APP_PATH, "test", "res", "img_proc_png").replace('\\', '/')
+        input_svg_path = os.path.join(img_proc_dir, "input_background.svg").replace('\\', '/')
+        expected_image_path = os.path.join(img_proc_dir, "expected_background.png").replace('\\', '/')
         
         assert os.path.exists(input_svg_path)
         
@@ -95,9 +95,9 @@ class SvgToPngTest(common_testing.BaseTestCase):
                 assert exp_rgb_val == result_rgb_val
                 
     def test_parse_svgfile_and_convert_to_png_antenna(self):
-        img_proc_dir = os.path.join(helpers.APP_PATH, "test", "res", "img_proc_png")
-        input_svg_path = os.path.join(img_proc_dir, "input_antenna.svg")
-        expected_image_path = os.path.join(img_proc_dir, "expected_antenna.png")
+        img_proc_dir = os.path.join(helpers.APP_PATH, "test", "res", "img_proc_png").replace('\\', '/')
+        input_svg_path = os.path.join(img_proc_dir, "input_antenna.svg").replace('\\', '/')
+        expected_image_path = os.path.join(img_proc_dir, "expected_antenna.png").replace('\\', '/')
         
         assert os.path.exists(input_svg_path)
         
@@ -122,8 +122,8 @@ class SvgToPngTest(common_testing.BaseTestCase):
                 assert exp_rgb_val == result_rgb_val
                   
     def test_parse_svgfile_and_convert_to_png_hat_q1(self):
-        img_proc_dir = os.path.join(helpers.APP_PATH, "test", "res", "img_proc_png")
-        input_svg_path = os.path.join(img_proc_dir, "input_hat.svg")
+        img_proc_dir = os.path.join(helpers.APP_PATH, "test", "res", "img_proc_png").replace('\\', '/')
+        input_svg_path = os.path.join(img_proc_dir, "input_hat.svg").replace('\\', '/')
         
         assert os.path.exists(input_svg_path)
                 

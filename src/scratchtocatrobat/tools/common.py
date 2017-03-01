@@ -40,7 +40,7 @@ log = logger.log
 
 # TODO: move into common_testing
 def get_project_base_path():
-    return os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
+    return os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..").replace('\\', '/'))
 
 
 def is_unix_platform():

@@ -45,7 +45,7 @@ def setup_logging():
     log.setLevel(logging.DEBUG)
 
     log_dir = helpers.config.get("PATHS", "logging")
-    fh = logging.FileHandler(os.path.join(log_dir, "s2cc-{}.log".format(datetime.now().isoformat().replace(":", "_"))))
+    fh = logging.FileHandler(os.path.join(log_dir, "s2cc-{}.log".format(datetime.now().isoformat().replace(":", "_"))).replace('\\', '/'))
     fh_fmt = logging.Formatter(helpers.config.get("LOG", "file_log_format").replace("\\", ""))
 
     fh.setLevel(_log_level_for_string(helpers.config.get("LOG", "file_log_level")))

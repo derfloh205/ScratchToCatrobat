@@ -138,12 +138,13 @@ def run_converter(scratch_project_file_or_url, output_dir,
             converted_project = converter.converted(project, progress_bar, context)
             catrobat_program_path = converted_project.save_as_catrobat_package_to(output_dir, archive_name, progress_bar, context)
             if extract_resulting_catrobat:
-                extraction_path = os.path.join(output_dir, os.path.splitext(os.path.basename(catrobat_program_path))[0])
+                extraction_path = os.path.join(output_dir, os.path.splitext(os.path.basename(catrobat_program_path))[0]).replace('\\', '/')
                 common.rm_dir(extraction_path)
                 common.makedirs(extraction_path)
-                scratch_output_path = os.path.join(extraction_path, "scratch")
+                scratch_output_path = os.path.join(extraction_path, "scratch").replace('\\', '/')
                 common.copy_dir(scratch_project_dir, scratch_output_path, overwrite=True)
                 common.extract(catrobat_program_path, extraction_path)
+                
 
         progress_bar.finish()
     except (common.ScratchtobatError, EnvironmentError, IOError) as e:
